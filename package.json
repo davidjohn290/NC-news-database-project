@@ -12,6 +12,9 @@
     "migrate-make": "knex migrate:make",
     "console-log": "npm run setup-dbs && npm run migrate-latest && npm run seed"
   },
+  "jest": {
+  "setupFilesAfterEnv": ["jest-sorted"]
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/northcoders/be-nc-news.git"
@@ -30,6 +33,7 @@
   },
   "devDependencies": {
     "jest": "^26.2.2",
+    "jest-sorted": "^1.0.6",
     "supertest": "^4.0.2"
   }
 }
