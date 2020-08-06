@@ -112,6 +112,16 @@ describe("app", () => {
             );
           });
       });
+      test("ERROR 400: responds with 400 error when passed a string instead of a number", () => {
+        return request(app)
+          .patch("/api/articles/12")
+          .send({ inc_votes: "five" })
+          .expect(400)
+          .then(({ body }) => {
+            console.log(body.msg);
+            expect(body.msg).toBe("Bad request");
+          });
+      });
       test("POST 200: responds with the posted comment", () => {
         return request(app)
           .post("/api/articles/1/comments")
@@ -132,6 +142,27 @@ describe("app", () => {
                 comment_id: expect.any(Number),
               })
             );
+          });
+      });
+      test("ERROR 400: responds with a 400 error when missing properties from the body", () => {
+        return request(app)
+          .post("/api/articles/1/comments")
+          .send({})
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.err).toBe("Bad request");
+          });
+      });
+      test("ERROR 404: responds with a 400 error when given an invalid article Id", () => {
+        return request(app)
+          .post("/api/articles/1243/comments")
+          .send({
+            username: "butter_bridge",
+            body: "It was a really interesting read. Would read again!",
+          })
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid article Id");
           });
       });
       test("GET 200: responds with the comments for a specified article__id", () => {

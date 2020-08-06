@@ -5,7 +5,6 @@ const {
   fetchAllCommentsById,
   fetchAllArticles,
 } = require("../models/articles.model");
-const { query } = require("express");
 
 const getArticleById = (req, res, next) => {
   const { params } = req;

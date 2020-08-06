@@ -25,14 +25,21 @@ const patchVotesById = (id, numberOfVotes) => {
 };
 
 const postCommentById = (id, { username, body }) => {
-  return knex("comments")
-    .insert({ body: body, author: username, article_id: id })
-    .where("article_id", id)
-    .returning("*")
-    .then((res) => {
-      if (res.length === 0) return Promise.reject({ status: 400 });
-      else return res[0];
+  if (username === undefined || body === undefined) {
+    return Promise.reject({
+      status: 400,
+      msg: "Missing details from send request",
     });
+  } else {
+    return knex("comments")
+      .insert({ body: body, author: username, article_id: id })
+      .where("article_id", id)
+      .returning("*")
+      .then((res) => {
+        if (res.length === 0) return Promise.reject({ status: 400 });
+        else return res[0];
+      });
+  }
 };
 
 const fetchAllCommentsById = (id, sort_by = "created_at", order = "desc") => {
@@ -42,6 +49,7 @@ const fetchAllCommentsById = (id, sort_by = "created_at", order = "desc") => {
     .where("article_id", id)
     .orderBy(sort_by, order)
     .then((res) => {
+      console.log(res);
       if (res.length === 0) return Promise.reject({ status: 400 });
       else {
         const formattedArray = res.map((comment) => {

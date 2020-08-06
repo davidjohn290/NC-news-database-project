@@ -19,6 +19,8 @@ const psqlErrors = (err, req, res, next) => {
     res.status(404).send({ msg: "Invalid sort by query" });
   } else if (err.code === "22P02") {
     res.status(400).send({ msg: "Bad request" });
+  } else if (err.code === "23503") {
+    res.status(404).send({ msg: "Invalid article Id" });
   } else {
     console.log(err);
   }
