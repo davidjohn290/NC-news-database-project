@@ -15,6 +15,9 @@ afterAll(() => {
 
 describe("app", () => {
   describe("api", () => {
+    // test("GET 200: responds with a JSON object of all the endpoints", () => {
+
+    // });
     describe("topics", () => {
       test("GET 200: responds with all the topics wrapped in an object", () => {
         return request(app)
@@ -58,7 +61,7 @@ describe("app", () => {
       test("ERROR 400: responds with an error when a non existent username is entered", () => {
         return request(app)
           .get("/api/users/noUser")
-          .expect(400)
+          .expect(404)
           .then(({ body }) => {
             expect(body.err).toBe("Bad request");
           });
@@ -87,7 +90,7 @@ describe("app", () => {
       test("ERROR 400: responds with a 400 when given an article_id that does not exist", () => {
         return request(app)
           .get("/api/articles/985")
-          .expect(400)
+          .expect(404)
           .then(({ body }) => {
             expect(body.err).toBe("Bad request");
           });
@@ -144,15 +147,6 @@ describe("app", () => {
             );
           });
       });
-      test("ERROR 400: responds with a 400 error when missing properties from the body", () => {
-        return request(app)
-          .post("/api/articles/1/comments")
-          .send({})
-          .expect(400)
-          .then(({ body }) => {
-            expect(body.err).toBe("Bad request");
-          });
-      });
       test("ERROR 404: responds with a 400 error when given an invalid article Id", () => {
         return request(app)
           .post("/api/articles/1243/comments")
@@ -205,7 +199,7 @@ describe("app", () => {
       });
       test("GET 200: orders the comments in ascending order when specified", () => {
         return request(app)
-          .get("/api/articles/1/comments?sort_by=comment_id&order_by=asc")
+          .get("/api/articles/1/comments?sort_by=comment_id&order=asc")
           .expect(200)
           .then(({ body }) => {
             expect(body.comments).toBeSortedBy("comment_id", {

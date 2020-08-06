@@ -9,7 +9,7 @@ const fetchArticleById = (id) => {
     .where("articles.article_id", id)
     .count("comments.article_id as comment_count")
     .then((res) => {
-      if (res.length === 0) return Promise.reject({ status: 400 });
+      if (res.length === 0) return Promise.reject({ msg: "Bad request" });
       else return res[0];
     });
 };
@@ -24,24 +24,6 @@ const patchVotesById = (id, numberOfVotes) => {
     });
 };
 
-const postCommentById = (id, { username, body }) => {
-  if (username === undefined || body === undefined) {
-    return Promise.reject({
-      status: 400,
-      msg: "Missing details from send request",
-    });
-  } else {
-    return knex("comments")
-      .insert({ body: body, author: username, article_id: id })
-      .where("article_id", id)
-      .returning("*")
-      .then((res) => {
-        if (res.length === 0) return Promise.reject({ status: 400 });
-        else return res[0];
-      });
-  }
-};
-
 const fetchAllCommentsById = (id, sort_by = "created_at", order = "desc") => {
   return knex
     .select("*")
@@ -49,7 +31,6 @@ const fetchAllCommentsById = (id, sort_by = "created_at", order = "desc") => {
     .where("article_id", id)
     .orderBy(sort_by, order)
     .then((res) => {
-      console.log(res);
       if (res.length === 0) return Promise.reject({ status: 400 });
       else {
         const formattedArray = res.map((comment) => {
@@ -91,7 +72,6 @@ const fetchAllArticles = (
 module.exports = {
   fetchArticleById,
   patchVotesById,
-  postCommentById,
   fetchAllCommentsById,
   fetchAllArticles,
 };

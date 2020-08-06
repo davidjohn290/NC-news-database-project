@@ -11,14 +11,12 @@ exports.formatDates = (list) => {
 
 exports.makeRefObj = (list) => {
   const refObj = {};
-  if (list.length === 0) return refObj;
-  else {
-    list.forEach((item) => {
-      const id = item.article_id;
-      const title = item.title;
-      refObj[title] = id;
-    });
-  }
+
+  list.forEach((item) => {
+    const id = item.article_id;
+    const title = item.title;
+    refObj[title] = id;
+  });
   return refObj;
 };
 
