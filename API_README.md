@@ -1,5 +1,9 @@
 # _README for my NC-News API_
 
+## Heroku link for hosted app
+
+- https://git.heroku.com/getting-nc-news.git
+
 ## Available Endpoints
 
 ```http
