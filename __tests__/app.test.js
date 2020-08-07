@@ -14,7 +14,7 @@ afterAll(() => {
 
 describe("app", () => {
   describe("api", () => {
-    test("GET 200: responds with a JSON object of all the endpoints", () => {
+    test("GET 200: responds with a JSON object of all the available endpoints", () => {
       return request(app)
         .get("/api")
         .expect(200)
