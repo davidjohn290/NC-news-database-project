@@ -3,7 +3,6 @@ process.env.NODE_ENV = "test";
 const request = require("supertest");
 const app = require("../server");
 const connection = require("../db/connection");
-const articlesRouter = require("../routers/articlesRouter");
 
 beforeEach(() => {
   return connection.seed.run();
@@ -15,9 +14,20 @@ afterAll(() => {
 
 describe("app", () => {
   describe("api", () => {
-    // test("GET 200: responds with a JSON object of all the endpoints", () => {
-
-    // });
+    test("GET 200: responds with a JSON object of all the endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.endpoints).toEqual(
+            expect.objectContaining({
+              "GET /api": expect.any(Object),
+              "GET /api/topics": expect.any(Object),
+              "GET /api/articles": expect.any(Object),
+            })
+          );
+        });
+    });
     describe("topics", () => {
       test("GET 200: responds with all the topics wrapped in an object", () => {
         return request(app)
@@ -236,6 +246,16 @@ describe("app", () => {
             expect(body.articles).toBeSortedBy("created_at", {
               descending: true,
               coerce: true,
+            });
+          });
+      });
+      test("GET 200: responds with all the article objects sorted by author", () => {
+        return request(app)
+          .get("/api/articles?sort_by=author")
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.articles).toBeSortedBy("author", {
+              descending: true,
             });
           });
       });

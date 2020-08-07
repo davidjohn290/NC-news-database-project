@@ -5,7 +5,7 @@ const fetchCommentById = (id, numberOfVotes) => {
     .select("*")
     .from("comments")
     .where("comment_id", id)
-    .update("votes", numberOfVotes)
+    .increment("votes", numberOfVotes)
     .returning("*")
     .then((res) => {
       if (res.length === 0)

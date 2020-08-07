@@ -16,8 +16,8 @@ const fetchArticleById = (id) => {
 
 const patchVotesById = (id, numberOfVotes) => {
   return knex("articles")
-    .update("votes", numberOfVotes)
     .where("article_id", id)
+    .increment("votes", numberOfVotes)
     .returning("*")
     .then((article) => {
       return article[0];
@@ -51,10 +51,14 @@ const fetchAllArticles = (
     .select("articles.*")
     .from("articles")
     .modify((query) => {
-      const columnFilter = Object.keys(filter)[0];
-      const rowFilter = filter[columnFilter];
-      if (Object.keys(filter).length === 1)
-        query.where(`articles.${columnFilter}`, rowFilter);
+      const columnFilter = Object.keys(filter);
+      if (
+        !filter.hasOwnProperty("sort_by") &&
+        !filter.hasOwnProperty("order") &&
+        columnFilter.length === 1
+      ) {
+        query.where(`articles.${columnFilter[0]}`, filter[columnFilter]);
+      }
     })
     .leftJoin("comments", "articles.article_id", "comments.article_id")
     .groupBy("articles.article_id")
