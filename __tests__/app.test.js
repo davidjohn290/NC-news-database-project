@@ -185,7 +185,7 @@ describe("app", () => {
             });
           });
       });
-      test("GET 200: defaults to sort_by created_at when no sort query is added", () => {
+      test("GET 200: defaults to sorted by created_at when no sort query is added", () => {
         return request(app)
           .get("/api/articles/1/comments")
           .expect(200)
