@@ -39,7 +39,7 @@ PATCH /api/articles/:article_id
 ---
 
 ```http
-POST /api.articles/:article_id/comments
+POST /api/articles/:article_id/comments
 ```
 
 - Adds a new comment to the specified article and returns the posted comment
