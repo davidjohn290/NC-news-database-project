@@ -66,7 +66,6 @@ const fetchAllArticles = (
     .count("comments.article_id as comment_count")
     .then((res) => {
       const formattedArray = res.map((article) => {
-        delete article.body;
         return article;
       });
       return formattedArray;
