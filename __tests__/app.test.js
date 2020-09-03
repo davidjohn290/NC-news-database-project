@@ -135,7 +135,7 @@ describe("app", () => {
             expect(body.msg).toBe("Bad request");
           });
       });
-      test("POST 200: responds with the posted comment", () => {
+      test.only("POST 200: responds with the posted comment", () => {
         return request(app)
           .post("/api/articles/1/comments")
           .send({
@@ -144,7 +144,6 @@ describe("app", () => {
           })
           .expect(201)
           .then(({ body }) => {
-            console.log(body.postedComment);
             expect(body.postedComment).toEqual(
               expect.objectContaining({
                 author: expect.any(String),
@@ -157,7 +156,7 @@ describe("app", () => {
             );
           });
       });
-      test("ERROR 404: responds with a 400 error when given an invalid article Id", () => {
+      test("ERROR 404: responds with a 404 error when given an invalid article Id", () => {
         return request(app)
           .post("/api/articles/1243/comments")
           .send({

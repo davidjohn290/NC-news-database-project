@@ -8,7 +8,7 @@ const custom405Error = (req, res, next) => {
 
 const customErrors = (err, req, res, next) => {
   if (err.msg === "Bad request") {
-    res.status(404).send({ err: "Bad request" });
+    res.status(400).send({ err: "Bad request" });
   } else if (err.status === 404) {
     res.status(404).send({ msg: "Comment_id not found" });
   } else next(err);
