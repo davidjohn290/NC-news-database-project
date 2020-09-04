@@ -54,7 +54,7 @@ const fetchAllArticles = (
       const columnFilter = Object.keys(filter);
       if (
         !filter.hasOwnProperty("sort_by") &&
-        !filter.hasOwnProperty("order") &&
+        !filter.hasOwnProperty("topic") &&
         columnFilter.length === 1
       ) {
         query.where(`articles.${columnFilter[0]}`, filter[columnFilter]);

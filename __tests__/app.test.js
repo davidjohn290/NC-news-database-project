@@ -135,7 +135,7 @@ describe("app", () => {
             expect(body.msg).toBe("Bad request");
           });
       });
-      test.only("POST 200: responds with the posted comment", () => {
+      test("POST 200: responds with the posted comment", () => {
         return request(app)
           .post("/api/articles/1/comments")
           .send({
