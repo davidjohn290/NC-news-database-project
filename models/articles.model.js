@@ -69,6 +69,8 @@ const fetchAllArticles = (
     .groupBy("articles.article_id")
     .orderBy(sort_by, order_by)
     .count("comments.article_id as comment_count")
+    .limit(8)
+    .offset(30)
     .then((res) => {
       const formattedArray = res.map((article) => {
         return article;
