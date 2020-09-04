@@ -71,7 +71,7 @@ describe("app", () => {
       test("ERROR 400: responds with an error when a non existent username is entered", () => {
         return request(app)
           .get("/api/users/noUser")
-          .expect(404)
+          .expect(400)
           .then(({ body }) => {
             expect(body.err).toBe("Bad request");
           });
@@ -100,7 +100,7 @@ describe("app", () => {
       test("ERROR 400: responds with a 400 when given an article_id that does not exist", () => {
         return request(app)
           .get("/api/articles/985")
-          .expect(404)
+          .expect(400)
           .then(({ body }) => {
             expect(body.err).toBe("Bad request");
           });
@@ -208,7 +208,7 @@ describe("app", () => {
       });
       test("GET 200: orders the comments in ascending order when specified", () => {
         return request(app)
-          .get("/api/articles/1/comments?sort_by=comment_id&order=asc")
+          .get("/api/articles/1/comments?sort_by=comment_id&&order=asc")
           .expect(200)
           .then(({ body }) => {
             expect(body.comments).toBeSortedBy("comment_id", {
@@ -217,70 +217,84 @@ describe("app", () => {
             });
           });
       });
-      test("GET 200: responds with all the article objects in an array", () => {
-        return request(app)
-          .get("/api/articles")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.articles).toEqual(
-              expect.arrayContaining([
-                expect.objectContaining({
-                  author: expect.any(String),
-                  title: expect.any(String),
-                  article_id: expect.any(Number),
-                  topic: expect.any(String),
-                  created_at: expect.any(String),
-                  votes: expect.any(Number),
-                  comment_count: expect.any(String),
-                }),
-              ])
-            );
+    });
+    test("GET 200: responds with all the article objects in an array", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(String),
+              }),
+            ])
+          );
+        });
+    });
+    test("GET 200: responds with all the article objects sorted by default to date and in descending order", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("created_at", {
+            descending: true,
+            coerce: true,
           });
-      });
-      test("GET 200: responds with all the article objects sorted by default to date and in descending order", () => {
-        return request(app)
-          .get("/api/articles")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.articles).toBeSortedBy("created_at", {
-              descending: true,
-              coerce: true,
-            });
+        });
+    });
+    test("GET 200: responds with all the article objects sorted by author", () => {
+      return request(app)
+        .get("/api/articles?sort_by=author")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.articles).toBeSortedBy("author", {
+            descending: true,
           });
-      });
-      test("GET 200: responds with all the article objects sorted by author", () => {
-        return request(app)
-          .get("/api/articles?sort_by=author")
-          .expect(200)
-          .then(({ body }) => {
-            expect(body.articles).toBeSortedBy("author", {
-              descending: true,
-            });
+        });
+    });
+    test("GET 200: responds with all the articles relating to the queried author", () => {
+      return request(app)
+        .get("/api/articles?author=rogersop")
+        .expect(200)
+        .then(({ body }) => {
+          const articles = body.articles;
+          expect(
+            articles.every((article) => article.author === "rogersop")
+          ).toBe(true);
+        });
+    });
+    test("GET 200: responds with all the articles relating to the queried topic", () => {
+      return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then(({ body }) => {
+          const articles = body.articles;
+          expect(articles.length).toBeGreaterThanOrEqual(1);
+          expect(articles.every((article) => article.topic === "mitch")).toBe(
+            true
+          );
+        });
+    });
+    test("GET 200: orders the topic by the specific sort by query", () => {
+      return request(app)
+        .get("/api/articles?sort_by=created_at&&topic=cats")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body.articles);
+          expect(body.articles).toBeSortedBy("created_at", {
+            coerce: true,
           });
-      });
-      test("GET 200: responds with all the articles relating to the queried author", () => {
-        return request(app)
-          .get("/api/articles?author=rogersop")
-          .expect(200)
-          .then(({ body }) => {
-            const articles = body.articles;
-            expect(
-              articles.every((article) => article.author === "rogersop")
-            ).toBe(true);
+          body.articles.forEach((article) => {
+            expect(article.topic).toBe("cats");
           });
-      });
-      test("GET 200: responds with all the articles relating to the queried topic", () => {
-        return request(app)
-          .get("/api/articles?topic=mitch")
-          .expect(200)
-          .then(({ body }) => {
-            const articles = body.articles;
-            expect(articles.length).toBeGreaterThanOrEqual(1);
-            expect(articles.every((article) => article.topic === "mitch")).toBe(
-              true
-            );
-          });
-      });
+        });
       test("ERROR 404: responds with a 404 error when sorted by a column that does not exist", () => {
         return request(app)
           .get("/api/articles?page=1")

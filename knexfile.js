@@ -36,7 +36,7 @@ const customConfig = {
     },
   },
 };
-//const log = console.log;
+// const log = console.log;
 // console.log = (...args) => {
 //   if (!/FsMigrations/.test(args[0])) log(...args);
 // };

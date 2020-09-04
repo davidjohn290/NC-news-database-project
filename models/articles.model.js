@@ -45,8 +45,10 @@ const fetchAllCommentsById = (id, sort_by = "created_at", order = "desc") => {
 const fetchAllArticles = (
   sort_by = "created_at",
   order_by = "desc",
-  filter
+  filter,
+  topic
 ) => {
+  console.log(topic);
   return knex
     .select("articles.*")
     .from("articles")
@@ -58,6 +60,9 @@ const fetchAllArticles = (
         columnFilter.length === 1
       ) {
         query.where(`articles.${columnFilter[0]}`, filter[columnFilter]);
+      }
+      if (topic) {
+        query.where("topic", topic);
       }
     })
     .leftJoin("comments", "articles.article_id", "comments.article_id")

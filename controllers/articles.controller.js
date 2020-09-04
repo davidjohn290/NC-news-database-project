@@ -32,9 +32,10 @@ const getAllCommentsById = (req, res, next) => {
 };
 
 const getAllArticles = (req, res, next) => {
-  const { sort_by, order_by } = req.query;
+  const { sort_by, order_by, topic } = req.query;
   const filter = req.query;
-  fetchAllArticles(sort_by, order_by, filter)
+
+  fetchAllArticles(sort_by, order_by, filter, topic)
     .then((articles) => {
       res.status(200).send({ articles });
     })
